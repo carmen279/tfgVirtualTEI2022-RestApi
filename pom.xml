@@ -11,6 +11,7 @@
     <groupId>com.tfg</groupId>
     <artifactId>RestApi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>RestApi</name>
     <description>RestApi</description>
     <properties>
@@ -79,6 +80,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${project.parent.version}</version>
+            </plugin>
         </plugins>
     </build>
 
