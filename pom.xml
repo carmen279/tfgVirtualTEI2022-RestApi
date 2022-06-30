@@ -14,7 +14,7 @@
     <name>RestApi</name>
     <description>RestApi</description>
     <properties>
-        <java.version>18</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
