@@ -27,6 +27,11 @@ public class DbInterface {
         this.template = template;
     }
 
+    /**
+     * Dada una lista de tutores, los inserta en la BD en la tabla de "CandidatoTutor"
+     * @param tutores
+     * @return
+     */
     public boolean addTutoresToDB(List<Alumno> tutores) {
         String removeParejas = "DELETE FROM PUBLIC.\"Pareja\"";
         template.update(removeParejas);
@@ -45,6 +50,11 @@ public class DbInterface {
         return Arrays.stream(rows).reduce(0, Integer::sum) > 0;
     }
 
+    /**
+     * Dada una lista de tutorizados, los inserta en la BD en la tabla de "CandidatoTutorizado"
+     * @param tutorizados
+     * @return
+     */
     public boolean addTutorizadosToDB(List<Alumno> tutorizados) {
         String removeParejas = "DELETE FROM PUBLIC.\"Pareja\"";
         template.update(removeParejas);
@@ -63,6 +73,12 @@ public class DbInterface {
         return Arrays.stream(rows).reduce(0, Integer::sum) > 0;
     }
 
+    /**
+     * Dada una lista de perfiles de alumno, los inserta en la BD en la tabla "PerfilProsocial"
+     * @param perfiles
+     * @return
+     * @throws SQLException
+     */
     public boolean addPerfilesToDB(List<Alumno> perfiles) throws SQLException {
         String removeParejas = "DELETE FROM PUBLIC.\"Pareja\"";
         template.update(removeParejas);
@@ -92,6 +108,10 @@ public class DbInterface {
         return false;
     }
 
+    /**
+     * Dado un alumno, comprueba si es tutor o tutorizado y lo añade en la tabla correspondiente
+     * @param alumno
+     */
     private void addPerfilAlumnoRelation(Alumno alumno) {
         //Buscar email en tutores
         if (checkIfTutor(alumno)) {
@@ -105,6 +125,10 @@ public class DbInterface {
         }
     }
 
+    /**
+     * Añade el alumno en la tabla "CandidatoTutorPerfilProsocial"
+     * @param alumno
+     */
     private void addPerfilTutorRelation(Alumno alumno) {
         String queryInsertPerfilTutor= "INSERT INTO  PUBLIC.\"CandidatoTutorPerfilProsocial\" (\"candidatoTutor\", \"perfilProsocial\") " +
                 "VALUES (?,?)";
@@ -117,6 +141,10 @@ public class DbInterface {
         });
     }
 
+    /**
+     * Añade el alumno a la tabla "CandidatoTutorizadoPerfilProsocial"
+     * @param alumno
+     */
     private void addPerfilTutorizadoRelation(Alumno alumno) {
         String queryInsertPerfilTutorizado= "INSERT INTO  PUBLIC.\"CandidatoTutorizadoPerfilProsocial\" (\"candidatoTutorizado\", \"perfilProsocial\") " +
                 "VALUES (?,?)";
@@ -129,6 +157,11 @@ public class DbInterface {
         });
     }
 
+    /**
+     * Comprueba que el alumno se encuentra en la tabla de "CandidatoTutor"
+     * @param alumno
+     * @return
+     */
     private boolean checkIfTutor(Alumno alumno) {
         String checkIfTutor = "SELECT * FROM PUBLIC.\"CandidatoTutor\" WHERE \"email\" = ?";
 
@@ -139,6 +172,11 @@ public class DbInterface {
         });
     }
 
+    /**
+     * Comprueba que el alumno se encuentra en la tabla de "CandidatoTutorizado"
+     * @param alumno
+     * @return
+     */
     private boolean checkIfTutorizado(Alumno alumno) {
         String checkIfTutorizado = "SELECT * FROM PUBLIC.\"CandidatoTutorizado\" WHERE \"email\" = ?";
 
@@ -149,16 +187,29 @@ public class DbInterface {
         });
     }
 
+    /**
+     * Devuelve los datos de todos los candidatos a tutores de la BD
+     * @return
+     */
     public List<Alumno> getTutorCandidatesDetailsFromDb() {
         String getTutoresDetails = "SELECT c.*,p.* FROM PUBLIC.\"CandidatoTutor\" AS c, PUBLIC.\"CandidatoTutorPerfilProsocial\" AS cp, PUBLIC.\"PerfilProsocial\" AS p WHERE c.\"email\" = cp.\"candidatoTutor\" AND cp.\"perfilProsocial\" = p.\"id\" ";
         return getAlumnosListFromQuery(getTutoresDetails);
     }
 
+    /**
+     * Devuelve los datos de todos los candidatos a tutorizados de la BD
+     * @return
+     */
     public List<Alumno> getTutorizadoCandidatesDetailsFromDb() {
         String getTutorizadosDetails = "SELECT c.*,p.* FROM PUBLIC.\"CandidatoTutorizado\" AS c, PUBLIC.\"CandidatoTutorizadoPerfilProsocial\" AS cp, PUBLIC.\"PerfilProsocial\" AS p WHERE c.\"email\" = cp.\"candidatoTutorizado\" AND cp.\"perfilProsocial\" = p.\"id\" ";
         return getAlumnosListFromQuery(getTutorizadosDetails);
     }
 
+
+    /**
+     * Devuelve los datos de todos los candidatos a tutores seleccionados de la BD
+     * @return
+     */
     public List<Alumno> getTutorSelectedDetailsFromDb() {
         String getTutoresDetails = "SELECT c.*, p.* FROM PUBLIC.\"CandidatoTutor\" AS c, PUBLIC.\"SeleccionadoTutor\" AS s, " +
                 "PUBLIC.\"CandidatoTutorPerfilProsocial\" AS cp, PUBLIC.\"PerfilProsocial\" AS p " +
@@ -167,6 +218,11 @@ public class DbInterface {
         return getAlumnosListFromQuery(getTutoresDetails);
     }
 
+
+    /**
+     * Devuelve los datos de todos los candidatos a tutorizados seleccionados de la BD
+     * @return
+     */
     public List<Alumno> getTutorizadoSelectedDetailsFromDb() {
         String getTutorizadosDetails = "SELECT c.*, p.* FROM PUBLIC.\"CandidatoTutorizado\" AS c, PUBLIC.\"SeleccionadoTutorizado\" AS s, " +
                 "PUBLIC.\"CandidatoTutorizadoPerfilProsocial\" AS cp, PUBLIC.\"PerfilProsocial\" AS p " +
@@ -175,6 +231,11 @@ public class DbInterface {
         return getAlumnosListFromQuery(getTutorizadosDetails);
     }
 
+    /**
+     * Devuelve una lista de alumnos con los detalles y datos de la BD
+     * @param getTutoresDetails
+     * @return
+     */
     private List<Alumno> getAlumnosListFromQuery(String getTutoresDetails) {
         List<Map<String, Object>> rows = template.queryForList(getTutoresDetails);
         List<Alumno> alumnos = new ArrayList<>();
@@ -190,6 +251,12 @@ public class DbInterface {
         return alumnos;
     }
 
+    /**
+     * Dadas dos listas de emails de alumnos tutores y tutorizados, las añade en la base de datos en la tabla "SeleccionadoTutor" y "SeleccionadoTutorizado"
+     * @param tutores
+     * @param tutorizados
+     * @return
+     */
     public boolean addSelectedToDB(List<String> tutores, List<String> tutorizados) {
         String removeParejas = "DELETE FROM PUBLIC.\"Pareja\"";
         template.update(removeParejas);
@@ -209,6 +276,11 @@ public class DbInterface {
                 && Arrays.stream(rowsTutorizados).reduce(0, Integer::sum) > 0;
     }
 
+    /**
+     * Dada una lista de parejas de alumnos, añade las parejas a la base de datos
+     * @param parejas
+     * @return
+     */
     public boolean addCouplesToDB(List<Pareja> parejas) {
         String removeParejas = "DELETE FROM PUBLIC.\"Pareja\"";
         template.update(removeParejas);
@@ -220,6 +292,10 @@ public class DbInterface {
         return Arrays.stream(rowsCouples).reduce(0, Integer::sum) > 0;
     }
 
+    /**
+     * Devuelve una lista de parejas con todos sus atributos de la BD
+     * @return
+     */
     public List<Pareja> getParejasFromDb() {
         String getParejas = """
                 SELECT ct."email" AS emailTutor,ct."dni" AS dniTutor,
@@ -241,6 +317,11 @@ public class DbInterface {
         return getParejasListFromQuery(getParejas);
     }
 
+    /**
+     * Dada una query, llama a la base de datos y parsea los resultados, devolviendo una lista de parejas
+     * @param getParejas
+     * @return
+     */
     private List<Pareja> getParejasListFromQuery(String getParejas) {
         List<Map<String, Object>> rows = template.queryForList(getParejas);
         List<Pareja> parejas = new ArrayList<>();
@@ -263,6 +344,10 @@ public class DbInterface {
         return parejas;
     }
 
+    /**
+     * Limpia todas las tablas de la BD
+     * @return
+     */
     public boolean clearDatabase() {
         String removeParejas = "DELETE FROM PUBLIC.\"Pareja\"";
         int rowsParejas = template.update(removeParejas);

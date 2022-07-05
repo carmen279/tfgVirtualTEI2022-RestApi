@@ -40,6 +40,10 @@ public class PerfilProsocial {
         this.ansiedad = ansiedad;
     }
 
+    /**
+     * Dadas las respuestas del alumno en un array, calcula las aptitudes de cada alumno
+     * @param responses
+     */
     private void calculateAreas(boolean[] responses) {
         this.consideracion = calculateArea(responses, consideracionPositiveResponses, consideracionNegativeResponses);
         this.autocontrol = calculateArea(responses, autocontrolPositiveResponses, autocontrolNegativeResponses);
@@ -49,6 +53,13 @@ public class PerfilProsocial {
         this.sinceridad = calculateArea(responses, sinceridadPositiveResponses, sinceridadNegativeResponses);
     }
 
+    /**
+     * Dadas las respuestas y el valor de cada pregunta, devuelve la nota de la sección analizada del alumno
+     * @param responses
+     * @param positiveResponses
+     * @param negativeResponses
+     * @return
+     */
     private float calculateArea(boolean[] responses, int[] positiveResponses, int[] negativeResponses) {
         float count = Arrays.stream(positiveResponses).filter((index) -> responses[index-1]).toArray().length;
         count += Arrays.stream(negativeResponses).filter((index) -> !responses[index-1]).toArray().length;

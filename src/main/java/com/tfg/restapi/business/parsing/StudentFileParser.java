@@ -10,6 +10,12 @@ public class StudentFileParser extends FileParser {
     private final Map<String, Header> stringHeaderMap = initializeStringHeaderMap();
     private final Map<Integer,Header> headerMap = new HashMap<>();
 
+    /**
+     * Dado un archivo con la lista de alumnos, recoge los datos de los alumnos y los devuelve en una lista
+     * @param actualResult
+     * @param cellsInRow
+     * @return
+     */
     @Override
     public List<Object> processRow(List<Object> actualResult, Iterator<Cell> cellsInRow) {
 
@@ -42,6 +48,10 @@ public class StudentFileParser extends FileParser {
         return actualResult;
     }
 
+    /**
+     * Inicializa el mapa en el que se guardarán las propiedades de cada alumno de cada línea
+     * @return
+     */
     private Map<String, Header> initializeStringHeaderMap() {
         Map<String, Header> map = new HashMap<>();
 

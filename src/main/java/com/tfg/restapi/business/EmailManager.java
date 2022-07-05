@@ -16,6 +16,13 @@ public class EmailManager {
         this.from = from;
     }
 
+    /**
+     * Método que, dada una lista de emails y un link a la encuesta, envía a cada email un correo con el contenido predeterminado y el enlace a la encuesta
+     * @param emails
+     * @param decodedPollLink
+     * @return
+     * @throws MessagingException
+     */
     public String sendEmail(List<String> emails, String decodedPollLink) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper;

@@ -13,6 +13,12 @@ import java.util.List;
 
 public abstract class FileParser {
 
+    /**
+     * Procesa un archivo excel, devolviendo una lista de los contenidos de cada línea
+     * @param excelFile
+     * @return
+     * @throws IOException
+     */
     public List<Object> processExcelSheet(MultipartFile excelFile) throws IOException {
 
         List<Object> processedInformation = new ArrayList<>();
@@ -31,5 +37,11 @@ public abstract class FileParser {
         return processedInformation;
     }
 
+    /**
+     * Procesa los contenidos de cada línea en función de la clase en la que se use
+     * @param actualResult
+     * @param cellsInRow
+     * @return
+     */
     public abstract List<Object>  processRow(List<Object> actualResult,Iterator<Cell> cellsInRow);
 }

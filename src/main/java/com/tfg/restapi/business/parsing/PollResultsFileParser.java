@@ -10,6 +10,12 @@ import java.util.List;
 
 public class PollResultsFileParser extends FileParser {
 
+    /**
+     * Por cada linea coge los valores del correo y del alumno, creando un array de boolean según las respuestas de la encuesta
+     * @param actualResult
+     * @param cellsInRow
+     * @return
+     */
     @Override
     public List<Object> processRow(List<Object> actualResult, Iterator<Cell> cellsInRow) {
 

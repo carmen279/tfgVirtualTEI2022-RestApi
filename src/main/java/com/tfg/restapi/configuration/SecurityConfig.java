@@ -18,12 +18,22 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Configuración de HTTPS
+     * @param httpSecurity
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable();
     }
 
+    /**
+     * Establece un límite para los tipos de peticiones y headers que pueden hacerse a la API
+     * (básicamente limitar las vulnerabilidades en llamadas a la API limitando las llamadas a un grupo controlado)
+     * @return
+     */
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

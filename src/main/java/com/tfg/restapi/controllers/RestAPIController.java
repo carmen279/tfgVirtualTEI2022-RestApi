@@ -48,6 +48,11 @@ public class RestAPIController {
     DbInterface dbinterface = new DbInterface(template);
 
 
+    /**
+     * Carga los alumnos tutores en la base de datos dado un archivo excel
+     * @param excelFile
+     * @return
+     */
     @PostMapping("/storeTutors")
     public String storeTutors(@Valid @RequestBody MultipartFile excelFile) {
         try {
@@ -65,6 +70,11 @@ public class RestAPIController {
         }
     }
 
+    /**
+     * Guarda los alumnos tutorizados en la base de datos dado un archivo excel
+     * @param excelFile
+     * @return
+     */
     @PostMapping("/storeTutorees")
     public String storeTutorees(@Valid @RequestBody MultipartFile excelFile) {
         try {
@@ -82,6 +92,10 @@ public class RestAPIController {
         }
     }
 
+    /**
+     * Devuelve los datos de los alumnos candidatos tutores y tutorizados en formato json
+     * @return
+     */
     @GetMapping("/getCandidatesDetails")
     public String getCandidatesDetails() {
         List<Alumno> tutores = dbinterface.getTutorCandidatesDetailsFromDb();
@@ -89,6 +103,10 @@ public class RestAPIController {
         return (new ObjectToJsonParser()).parseAlumnos(tutores, tutorizados);
     }
 
+    /**
+     * Devuelve los datos de los alumnos candidatos seleccionados tutores y tutorizados en formato json
+     * @return
+     */
     @GetMapping("/getSelectedDetails")
     public String getSelectedDetails() {
         List<Alumno> tutores = dbinterface.getTutorSelectedDetailsFromDb();
@@ -96,9 +114,14 @@ public class RestAPIController {
         return (new ObjectToJsonParser()).parseAlumnos(tutores, tutorizados);
     }
 
-    //Recibe json formato {tutores:["ejemplo1@educastur.es, ejemplo2@educastur.es"],tutorizados:["ejemplo3@educastur.es, ejemplo4@educastur.es"]}
+    /**
+     * Recive un json de tutores y tutorizados y los guarda en la base de datos
+     * @param selectedJson
+     * @return
+     */
     @PostMapping("/storeSelected")
     public String storeSelected(@Valid @RequestBody String selectedJson) {
+        //Recibe json formato {tutores:["ejemplo1@educastur.es, ejemplo2@educastur.es"],tutorizados:["ejemplo3@educastur.es, ejemplo4@educastur.es"]}
         selectedJson = URLDecoder.decode(selectedJson);
         selectedJson = selectedJson.substring(0, selectedJson.length()-1);
         System.out.println(selectedJson);
@@ -117,6 +140,13 @@ public class RestAPIController {
                 "The excel file provided could not be correctly processed");
     }
 
+    /**
+     * Dado un objeto json y una clave string parámetro en el que el parámetro es la key de una lista,
+     * devuelve una lista de strings con los contenidos de esa lista
+     * @param jsonObject
+     * @param jsonParam
+     * @return
+     */
     private List<String> getListFromJsonParam(JsonObject jsonObject, String jsonParam) {
         JsonArray listJson = jsonObject.getAsJsonArray(jsonParam);
         List<String> list = new ArrayList<>();
@@ -126,6 +156,11 @@ public class RestAPIController {
         return list;
     }
 
+    /**
+     * Guarda las parejas pasadas en formato json
+     * @param couplesJson
+     * @return
+     */
     @PostMapping("/storeCouples")
     public String storeCouples(@Valid @RequestBody String couplesJson) {
         List<Pareja> parejas = getParejasFromJson(couplesJson);
@@ -136,6 +171,11 @@ public class RestAPIController {
         return "Ha habido un problema al cargar la selección de parejas en la base de datos";
     }
 
+    /**
+     * Dado un string con contenidos en formato json, parsea el contenido y devuelve una lista de objetos parejas
+     * @param couplesJson
+     * @return
+     */
     private List<Pareja> getParejasFromJson(String couplesJson) {
         JsonArray jsonArray = JsonParser.parseString(couplesJson).getAsJsonArray();
         List<Pareja> parejas = new ArrayList<>();
@@ -149,12 +189,20 @@ public class RestAPIController {
         return parejas;
     }
 
+    /**
+     * Devuelve un String de las parejas de la base de datos en formato json
+     * @return
+     */
     @GetMapping("/getCouples")
     public String getCouples() {
         List<Pareja> parejas = dbinterface.getParejasFromDb();
         return (new ObjectToJsonParser()).parseParejas(parejas);
     }
 
+    /**
+     * Devuelve en json los datos de candidatos a tutores, a tutorizados, los alumnos seleccionados y las parejas finalmente formadas
+     * @return
+     */
     @GetMapping("/getReport")
     public String getReport() {
         List<Alumno> candidatosTutores = dbinterface.getTutorCandidatesDetailsFromDb();
@@ -165,6 +213,11 @@ public class RestAPIController {
         return (new ObjectToJsonParser()).parseToReport(candidatosTutores, candidatosTutorizados, seleccionadosTutores, seleccionadosTutorizados, parejas);
     }
 
+    /**
+     * Llama a la base de datos para recoger los candidatos a tutores y tutorizados. Dadas ambas listas,
+     * hace un cálculo de puntuación para cada alumno y aquellos con mayor puntuación quedan seleccionados.
+     * @return
+     */
     @GetMapping("/getSelectionSuggestion")
     public String getSelectionSuggestion() {
         List<Alumno> tutores = dbinterface.getTutorCandidatesDetailsFromDb();
@@ -188,6 +241,11 @@ public class RestAPIController {
         return (new ObjectToJsonParser()).parseAlumnos(selectedTutores, selectedTutorizados);
     }
 
+    /**
+     * Dada una lista de alumnos tutorizados, ordena la lista en función de la puntuación del perfil de cada alumno
+     * @param tutorizados
+     * @return
+     */
     private List<Alumno> orderTutorizadosByPerfil(List<Alumno> tutorizados) {
         ArrayList<Alumno> tutorizadosMutable = new ArrayList<>();
 
@@ -209,6 +267,11 @@ public class RestAPIController {
         return tutorizadosMutable;
     }
 
+    /**
+     * Dada una lista de alumnos tutores, ordena la lista en función de la puntuación del perfil de cada alumno
+     * @param tutores
+     * @return
+     */
     private List<Alumno> orderTutoresByPerfil(List<Alumno> tutores) {
         ArrayList<Alumno> tutoresMutable = new ArrayList<>();
 
@@ -230,6 +293,10 @@ public class RestAPIController {
         return tutoresMutable;
     }
 
+    /**
+     * De forma aleatoria, asigna en la lista a cada tutor un alumno a tutorizar
+     * @return
+     */
     @GetMapping("/getCouplesSuggestion")
     public String getCouplesSuggestion() {
         List<Alumno> tutores = dbinterface.getTutorSelectedDetailsFromDb();
@@ -254,6 +321,11 @@ public class RestAPIController {
         return (new ObjectToJsonParser()).parseParejas(parejas);
     }
 
+    /**
+     * Dado un archivo, lo parsea y devuelve un grupo de perfiles de alumno que será guardado en la base de datos
+     * @param excelFile
+     * @return
+     */
     @PostMapping("/storePollResults")
     public String storePollResults(@Valid @RequestBody MultipartFile excelFile) {
         try {
@@ -280,6 +352,14 @@ public class RestAPIController {
     Receives a parameter with the link to the poll and an excel file
     on the body containing the emails to send the poll link to.
      */
+
+    /**
+     * Recibe como parámetro un link a la encuesta y a un archivo excell que contiene los emails de los
+     * alumnos a los que se les enviará la encuesta
+     * @param pollLink
+     * @param excelFile
+     * @return
+     */
     @PostMapping("/sendEmails")
     public String sendEmails(@RequestParam String pollLink, @Valid @RequestBody MultipartFile excelFile) {
         try {
@@ -297,6 +377,10 @@ public class RestAPIController {
         }
     }
 
+    /**
+     * Borra todos los datos de la base de datos
+     * @return
+     */
     @GetMapping("/clearData")
     public String clearData() {
         if (dbinterface.clearDatabase())

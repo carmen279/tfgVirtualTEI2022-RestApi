@@ -9,6 +9,10 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class DatabaseConfig {
+    /**
+     * Configuración de JDBC
+     * @return
+     */
     @Bean
     @Primary
     @ConfigurationProperties("spring.datasource")
@@ -33,6 +37,12 @@ public class DatabaseConfig {
 
 
     }
+
+    /**
+     * Data source de JDBC
+     * @param properties
+     * @return
+     */
     @Bean
     @ConfigurationProperties("spring.datasource.hikari")
     public HikariDataSource dataSource(DataSourceProperties properties) {

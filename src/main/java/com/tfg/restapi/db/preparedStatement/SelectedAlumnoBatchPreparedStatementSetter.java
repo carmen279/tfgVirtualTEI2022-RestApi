@@ -13,6 +13,12 @@ public class SelectedAlumnoBatchPreparedStatementSetter implements BatchPrepared
         super();
         this.alumnos = alumnos;
     }
+
+    /**
+     * Dado un prepared statement, asigna los valores de la petición de este
+     * @param ps
+     * @param i
+     */
     @Override
     public void setValues(PreparedStatement ps, int i) {
 

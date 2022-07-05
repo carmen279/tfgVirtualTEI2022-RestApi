@@ -6,6 +6,12 @@ import com.tfg.restapi.model.Pareja;
 import java.util.List;
 
 public class ObjectToJsonParser {
+    /**
+     * Dada una lista de alumnos tutores y tutorizados, parsea los datos para devolver un json con objetos representando estos
+     * @param tutores
+     * @param tutorizados
+     * @return
+     */
     public String parseAlumnos(List<Alumno> tutores, List<Alumno> tutorizados) {
         StringBuilder jsonSb = new StringBuilder();
         jsonSb.append("{\"tutores\": [");
@@ -25,6 +31,11 @@ public class ObjectToJsonParser {
         return jsonSb.toString();
     }
 
+    /**
+     * Dado un alumno, lo parsea y devuelve un objeto json representante de este
+     * @param alumno
+     * @return
+     */
     private String parseAlumno(Alumno alumno) {
         return "{\"email\":\"" + alumno.getEmail() + "\"," +
                 "\"dni\":\"" + alumno.getDni() + "\"," +
@@ -41,6 +52,11 @@ public class ObjectToJsonParser {
                 "}},";
     }
 
+    /**
+     * Dada una lista de parejas, parsea la lista y devuelve un objeto json de las parejas parseadas
+     * @param parejas
+     * @return
+     */
     public String parseParejas(List<Pareja> parejas) {
         StringBuilder jsonSb = new StringBuilder();
         jsonSb.append("[");
@@ -54,6 +70,11 @@ public class ObjectToJsonParser {
         return jsonSb.toString();
     }
 
+    /**
+     * Dada una pareja, parsea el objeto y lo devuelve en formato json
+     * @param pareja
+     * @return
+     */
     public String parsePareja(Pareja pareja){
         String parejaStr = "{\"tutor\": "+ parseAlumno(pareja.getTutor()) +
                 "\"tutorizado\": " + parseAlumno(pareja.getTutorizado());
@@ -63,6 +84,15 @@ public class ObjectToJsonParser {
         return parejaStr + "},";
     }
 
+    /**
+     * Dados los datos involucrados en la formación parejas desde el comienzo, extrae los datos y crea un informe en formato String
+     * @param candidatosTutores
+     * @param candidatosTutorizados
+     * @param seleccionadosTutores
+     * @param seleccionadosTutorizados
+     * @param parejas
+     * @return
+     */
     public String parseToReport(List<Alumno> candidatosTutores, List<Alumno> candidatosTutorizados, List<Alumno> seleccionadosTutores, List<Alumno> seleccionadosTutorizados, List<Pareja> parejas) {
         StringBuilder sb = new StringBuilder();
         sb.append( "VirtualTEI - Resultados del proceso de emparejamiento\n\n\n\n");
@@ -88,6 +118,11 @@ public class ObjectToJsonParser {
         return sb.toString();
     }
 
+    /**
+     * Dadaa una lista de alumnos y un objeto string builder, parsea la lista de alumnos y añade al string builder los contenidos parseados de la lista de forma simplificada
+     * @param seleccionadosTutores
+     * @param sb
+     */
     private void parseAlumnoContentSimplified(List<Alumno> seleccionadosTutores, StringBuilder sb) {
         for (Alumno alumno : seleccionadosTutores) {
             sb.append("\tAlumno:\n");
@@ -99,6 +134,11 @@ public class ObjectToJsonParser {
         }
     }
 
+    /**
+     * Dadaa una lista de alumnos tutores y un objeto string builder, parsea la lista de alumnos tutores y añade al string builder los contenidos parseados de la lista
+     * @param candidatosTutores
+     * @param sb
+     */
     private void parseAlumnoContent(List<Alumno> candidatosTutores, StringBuilder sb) {
         for (Alumno alumno : candidatosTutores) {
             sb.append("\tAlumno:\n");
