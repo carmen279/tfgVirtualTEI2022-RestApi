@@ -119,7 +119,7 @@ public class ObjectToJsonParser {
     }
 
     /**
-     * Dadaa una lista de alumnos y un objeto string builder, parsea la lista de alumnos y añade al string builder los contenidos parseados de la lista de forma simplificada
+     * Dada una lista de alumnos y un objeto string builder, parsea la lista de alumnos y añade al string builder los contenidos parseados de la lista de forma simplificada
      * @param seleccionadosTutores
      * @param sb
      */

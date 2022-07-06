@@ -17,10 +17,11 @@ public class EmailFileParser extends FileParser {
     public List<Object> processRow(List<Object> actualResult, Iterator<Cell> cellsInRow) {
         while (cellsInRow.hasNext()) {
             Cell currentCell = cellsInRow.next();
-            // each cell case
+            // Procesa cada celda
             String title = currentCell.getStringCellValue();
-            //if(title.endsWith("@educastur.es"))
-            if(title.endsWith("@gmail.com"))
+
+            //En una versión real debería ser sólo EDUCASTUR
+            if(title.endsWith("@educastur.es") || title.endsWith("@gmail.com") || title.endsWith("@outlook.com"))
                 actualResult.add(title);
         }
         return actualResult;

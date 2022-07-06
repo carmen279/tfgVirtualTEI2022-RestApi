@@ -115,7 +115,7 @@ public class RestAPIController {
     }
 
     /**
-     * Recive un json de tutores y tutorizados y los guarda en la base de datos
+     * Recibe un json de tutores y tutorizados seleccionados y los guarda en la base de datos
      * @param selectedJson
      * @return
      */
@@ -223,6 +223,7 @@ public class RestAPIController {
         List<Alumno> tutores = dbinterface.getTutorCandidatesDetailsFromDb();
         List<Alumno> tutorizados = dbinterface.getTutorizadoCandidatesDetailsFromDb();
 
+        //Sólo se aceptan tutores que cumplan con unos umbrales mínimos
         List<Alumno> filteredTutores = tutores.stream().filter((tutor) -> (tutor.getPerfil().getAnsiedad()< 7
                 && tutor.getPerfil().getRetraimiento()< 5
                 && tutor.getPerfil().getConsideracion() >= 5
@@ -294,7 +295,7 @@ public class RestAPIController {
     }
 
     /**
-     * De forma aleatoria, asigna en la lista a cada tutor un alumno a tutorizar
+     * Sugiere una asignación de parejas que ordena a los tutores de más prosociales a menos y los tutorizados de menos a más y los empareja uno a uno
      * @return
      */
     @GetMapping("/getCouplesSuggestion")
@@ -302,19 +303,13 @@ public class RestAPIController {
         List<Alumno> tutores = dbinterface.getTutorSelectedDetailsFromDb();
         List<Alumno> tutorizados = dbinterface.getTutorizadoSelectedDetailsFromDb();
 
+        List<Alumno> orderedTutores = orderTutoresByPerfil(tutores);
+        List<Alumno> orderedTutorizados = orderTutorizadosByPerfil(tutorizados);
+
         List<Pareja> parejas = new ArrayList<>();
 
-        Random rnd = new Random();
-
-        while (tutores.size() > 0){
-            int randomTutor = rnd.nextInt(tutores.size());
-            int randomTutorizado = rnd.nextInt(tutorizados.size());
-
-            Pareja pareja = new Pareja(tutores.get(randomTutor),tutorizados.get(randomTutorizado));
-
-            tutores.remove(randomTutor);
-            tutorizados.remove(randomTutorizado);
-
+        for (int i = 0; i < orderedTutores.size(); i++) {
+            Pareja pareja = new Pareja(orderedTutores.get(i), orderedTutorizados.get(i));
             parejas.add(pareja);
         }
 
@@ -346,15 +341,8 @@ public class RestAPIController {
         }
     }
 
-
-
-    /*
-    Receives a parameter with the link to the poll and an excel file
-    on the body containing the emails to send the poll link to.
-     */
-
     /**
-     * Recibe como parámetro un link a la encuesta y a un archivo excell que contiene los emails de los
+     * Recibe como parámetro un link a la encuesta y a un archivo excel que contiene los emails de los
      * alumnos a los que se les enviará la encuesta
      * @param pollLink
      * @param excelFile
